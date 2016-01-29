@@ -34,7 +34,9 @@ public class CEPService implements ICEPService {
 	private static final int IDX_NUM = 4;
 	private static final String HIFEN = "-";
 
-	public static final String BASE_URL = "http://www.buscacep.correios.com.br/servicos/dnec/consultaEnderecoAction.do?relaxation=%s&TipoCep=ALL&semelhante=S&cfm=1&Metodo=listaLogradouro&TipoConsulta=relaxation";
+	//public static final String BASE_URL = "http://www.buscacep.correios.com.br/servicos/dnec/consultaEnderecoAction.do?relaxation=%s&TipoCep=ALL&semelhante=S&cfm=1&Metodo=listaLogradouro&TipoConsulta=relaxation";
+	public static final String BASE_URL = "http://www.buscacep.correios.com.br/sistemas/buscacep/resultadoBuscaCepEndereco.cfm";
+	//public static final String BASE_URL = "http://www.callink.com.br";
 
 	public CEP buscaPorNumeroCEP(String numCEP)
 			throws CEPNaoEncontradoException, CEPServiceFailureException {
@@ -77,9 +79,15 @@ public class CEPService implements ICEPService {
 
 	private Elements busca(String strQuery) {
 		try {
-			Document doc = Jsoup.connect(
-					String.format(BASE_URL,
-							URLEncoder.encode(strQuery, "ISO-8859-1"))).get();
+			System.setProperty("http.proxyHost", "robson_florenti:Callink02@proxyclk.callink.com.br"); // set proxy server
+			System.setProperty("http.proxyPort", "8080");  //set proxy port
+			Document doc = Jsoup.connect(String.format(BASE_URL, URLEncoder.encode(strQuery, "ISO-8859-1")))
+							.timeout(0)
+							.data("relaxation", strQuery)
+							.data("tipoCEP", "ALL")
+							.data("semelhante","N")
+							.post();
+			
 			Elements rows = doc.getElementsByAttributeValueMatching("onclick",
 					"javascript:detalharCep.*");
 			return rows;
