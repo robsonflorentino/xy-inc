@@ -3,6 +3,8 @@ package br.com.robsonflorentino.service;
 import java.util.List;
 
 import br.com.robsonflorentino.model.CEP;
+import br.com.robsonflorentino.service.exceptions.CEPNaoEncontradoException;
+import br.com.robsonflorentino.service.exceptions.CEPServiceFailureException;
 
 /**
  * Expoe os serviços de busca de cep
@@ -16,7 +18,7 @@ public interface ICEPService {
 	 * @param numCEP o número do CEP a ser procurado.
 	 * @return o <code>{@link CEP}</code> que foi encontrado.
 	 */
-	public CEP buscaPorNumeroCEP(String numCEP);
+	public CEP buscaPorNumeroCEP(String numCEP) throws CEPNaoEncontradoException, CEPServiceFailureException;
 	
 	/**
 	 * Obtem os <code>{@link CEP}s</code> que foram encontrados 
